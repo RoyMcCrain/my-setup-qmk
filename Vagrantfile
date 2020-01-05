@@ -17,8 +17,9 @@ Vagrant.configure("2") do |config|
   end
 
   # I used local qmk_firmware repository.
+
   # Please rewrite according to your environment.
-  config.vm.synced_folder "/Users/roy/dev/keyboard/qmk_firmware", "/qmk_firmware"
+  config.vm.synced_folder "/Users/roy/dev/keyboard/qmk_firmware", "/qmk_firmware", type: "rsync", rsync__args: ["--verbose", "--archive", "--delete", "-z"]
   config.vbguest.auto_update = true
 
   # Install build tools
