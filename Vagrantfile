@@ -1,5 +1,4 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
+# -*- mode: ruby -*- vi: set ft=ruby :
 Vagrant.configure("2") do |config|
 
   config.vm.box = "hashicorp/bionic64"
@@ -19,7 +18,7 @@ Vagrant.configure("2") do |config|
   # I used local qmk_firmware repository.
 
   # Please rewrite according to your environment.
-  config.vm.synced_folder "/Users/roy/dev/keyboard/qmk_firmware", "/qmk_firmware", type: "rsync", rsync__args: ["--verbose", "--archive", "--delete", "-z"]
+  config.vm.synced_folder "/Users/roy/dev/keyboard/qmk_firmware", "/qmk_firmware"
   config.vbguest.auto_update = true
 
   # Install build tools
