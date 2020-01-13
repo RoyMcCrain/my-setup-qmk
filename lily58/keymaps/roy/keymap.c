@@ -10,12 +10,12 @@
 
 extern uint8_t is_master;
 
-#define _QWERTY 0
+#define _DVORAK 0
 #define _RAISE 1
 #define _LOWER 2
 
 enum custom_keycodes {
-  QWERTY = SAFE_RANGE,
+  DVORAK = SAFE_RANGE,
   RAISE,
   LOWER,
 };
@@ -23,18 +23,10 @@ enum custom_keycodes {
 // Shortcut to make keymap more readable
 #define LOWER2 LT(_LOWER, KC_LANG2)
 #define RAISE2 LT(_RAISE, KC_LANG1)
-#define RCTLE RCTL_T(KC_ESC)
+#define CTRLE CTL_T(KC_ESC)
 
 // save cmd + s
 #define KC_SAVE LGUI(KC_S)
-// save cmd + z
-#define KC_UNDO LGUI(KC_Z)
-// save cmd + x
-#define KC_CUT LGUI(KC_X)
-// save cmd + c
-#define KC_COPY LGUI(KC_C)
-// save cmd + v
-#define KC_PASTE LGUI(KC_V)
 // cmd + enter
 #define KC_CENT LGUI(KC_ENT)
 
@@ -56,7 +48,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                   `----------------------------'           '------''--------------------'
  */
 
- [_QWERTY] = LAYOUT( \
+ [_DVORAK] = LAYOUT( \
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
   KC_LALT,  KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                      KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_ESC, \
   KC_LCTRL, KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                      KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_SAVE, \
@@ -170,9 +162,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #endif
   }
   switch (keycode) {
-    case QWERTY:
+    case DVORAK:
       if (record->event.pressed) {
-        set_single_persistent_default_layer(_QWERTY);
+        set_single_persistent_default_layer(_DVORAK);
       }
       return false;
       break;
