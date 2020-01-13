@@ -23,17 +23,10 @@ enum custom_keycodes {
 // Shortcut to make keymap more readable
 #define LOWER2 LT(_LOWER, KC_LANG2)
 #define RAISE2 LT(_RAISE, KC_LANG1)
+#define CTRLE CTL_T(KC_ESC)
 
 // save cmd + s
 #define KC_SAVE LGUI(KC_S)
-// save cmd + z
-#define KC_UNDO LGUI(KC_Z)
-// save cmd + x
-#define KC_CUT LGUI(KC_X)
-// save cmd + c
-#define KC_COPY LGUI(KC_C)
-// save cmd + v
-#define KC_PASTE LGUI(KC_V)
 // cmd + enter
 #define KC_CENT LGUI(KC_ENT)
 
@@ -60,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_LALT,  KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                      KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_ESC, \
   KC_LCTRL, KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                      KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_SAVE, \
   KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B,   KC_LBRC,  KC_RBRC, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT, \
-                             KC_LGUI, KC_BSPC, LOWER2, KC_SPC,   KC_ENT,  RAISE2,  KC_RCTL, KC_SAVE \
+                             KC_LGUI, KC_BSPC, LOWER2, KC_SPC,   KC_ENT,  RAISE2,  KC_CTRLE, KC_SAVE \
 ),
 /* LOWER
  * ,-----------------------------------------.                    ,-----------------------------------------.
