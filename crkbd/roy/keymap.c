@@ -31,12 +31,16 @@ enum macro_keycodes {
 };
 
 // Shortcut to make keymap more readable
-#define LOWER2 LT(_LOWER, KC_LANG2)
-#define RAISE1 LT(_RAISE, KC_LANG1)
+#define LOWER1 LT(_LOWER, KC_LANG1)
+#define RAISE2 LT(_RAISE, KC_LANG2)
 #define CTRLE CTL_T(KC_ESC)
 
 // save cmd + s
 #define KC_SAVE LGUI(KC_S)
+#define UNDO LGUI(KC_Z)
+#define CUT LGUI(KC_X)
+#define COPY LGUI(KC_C)
+#define PSTE LGUI(KC_V)
 // cmd + enter
 #define KC_CENT LGUI(KC_ENT)
 
@@ -49,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LSFT, KC_SCLN,    KC_Q,    KC_J,    KC_K,    KC_X,                         KC_B,    KC_M,    KC_W,    KC_V,    KC_Z, KC_RSFT,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_BSPC,  LOWER2,  KC_SPC,     KC_ENT,  RAISE1,  CTRLE \
+                                          KC_BSPC,  LOWER1,  KC_SPC,     KC_ENT,  RAISE2,  CTRLE \
                                       //`--------------------------'  `--------------------------'
 
   ),
@@ -60,9 +64,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, KC_UNDO,  KC_CUT, KC_COPY, KC_PSTE, KC_LPRN,                      KC_RPRN, XXXXXXX, _______, _______, XXXXXXX, XXXXXXX,\
+      XXXXXXX,    UNDO,     CUT,    COPY,    PSTE, KC_LPRN,                      KC_RPRN, XXXXXXX, _______, _______, XXXXXXX, XXXXXXX,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_BSPC,  LOWER2,  KC_SPC,    KC_CENT,  RAISE1,  CTRLE \
+                                          KC_BSPC,  LOWER1,  KC_SPC,    KC_CENT,  RAISE2,  CTRLE \
                                       //`--------------------------'  `--------------------------'
     ),
 
@@ -72,9 +76,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LCTL,  KC_GRV, KC_BSLS,  KC_EQL, KC_SLSH,KC_MINUS,                      KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT, KC_UNDS, _______, \
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, KC_UNDO,  KC_CUT, KC_COPY, KC_PSTE, KC_LBRC,                      KC_RBRC, XXXXXXX, _______, _______, XXXXXXX, XXXXXXX,\
+      XXXXXXX,    UNDO,     CUT,    COPY,    PSTE, KC_LBRC,                      KC_RBRC, XXXXXXX, _______, _______, XXXXXXX, XXXXXXX,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                           KC_DEL,  LOWER2,  KC_TAB,     KC_ENT,  RAISE1,  CTRLE \
+                                           KC_DEL,  LOWER1,  KC_TAB,     KC_ENT,  RAISE2,  CTRLE \
                                       //`--------------------------'  `--------------------------'
   ),
 
@@ -86,7 +90,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI,  LOWER2,  KC_SPC,     KC_ENT,  RAISE1, KC_RALT \
+                                          KC_LGUI,  LOWER1,  KC_SPC,     KC_ENT,  RAISE2, KC_RALT \
                                       //`--------------------------'  `--------------------------'
   )
 };
