@@ -13,12 +13,16 @@ enum custom_keycodes {
 };
 
 // Shortcut to make keymap more readable
-#define LOWER2 LT(_LOWER, KC_LANG2)
-#define RAISE2 LT(_RAISE, KC_LANG1)
+#define LOWER2 LT(_LOWER, KC_LANG1)
+#define RAISE2 LT(_RAISE, KC_LANG2)
 #define CTRLE CTL_T(KC_ESC)
 
 // save cmd + s
 #define KC_SAVE LGUI(KC_S)
+#define UNDO LGUI(KC_Z)
+#define CUT LGUI(KC_X)
+#define COPY LGUI(KC_C)
+#define PASTE LGUI(KC_V)
 // cmd + enter
 #define KC_CENT LGUI(KC_ENT)
 
@@ -34,7 +38,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├--------┼--------┼--------┼--------┼--------┼--------┼--------┼--------┐        ┌--------┼--------┼--------┼--------┼--------┼--------┼--------┼--------┤
      KC_LSFT  ,KC_SCLN  ,KC_Q     ,KC_J     ,KC_K     ,KC_X     ,XXXXXXX  ,XXXXXXX  ,          XXXXXXX  ,XXXXXXX  ,KC_B     ,KC_M     ,KC_W     ,KC_V     ,KC_Z     ,KC_RSFT  ,
   //├--------┼--------┼--------┼--------┼----┬--┴----┬--┼--------┼--------┤        ├--------┼--------┼---┬----┴--┬---┼--------┼--------┼--------┼--------┤
-     KC_LGUI  ,XXXXXXX  ,XXXXXXX  ,KC_BSPC  ,      LOWER2   ,    KC_SPC   ,XXXXXXX  ,          XXXXXXX  ,KC_ENT   ,     RAISE2   ,     CTRLE    ,KC_DOWN  ,KC_UP    ,KC_SAVE 
+     KC_LGUI  ,XXXXXXX  ,XXXXXXX  ,CTRLE    ,      LOWER2   ,    KC_SPC   ,XXXXXXX  ,          XXXXXXX  ,KC_ENT   ,     RAISE2   ,     KC_BSPC  ,KC_DOWN  ,KC_UP    ,KC_SAVE 
   //└--------┴--------┴--------┴--------┘    └--------┘  └--------┴--------┘        └--------┴--------┘   └--------┘   └--------┴--------┴--------┴--------┘
   ),
 
@@ -46,9 +50,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├--------┼--------┼--------┼--------┼--------┼--------┼--------┤                            ├--------┼--------┼--------┼--------┼--------┼--------┼--------┤
      _______  ,KC_1     ,KC_2     ,KC_3     ,KC_4     ,KC_5     ,XXXXXXX  ,                              XXXXXXX  ,KC_6     ,KC_7     ,KC_8     ,KC_9     ,KC_0     ,_______  ,
   //├--------┼--------┼--------┼--------┼--------┼--------┼--------┼--------┐        ┌--------┼--------┼--------┼--------┼--------┼--------┼--------┼--------┤
-     _______  ,KC_UNDO  ,KC_CUT   ,KC_COPY  ,KC_PASTE ,KC_LBRC  ,XXXXXXX  ,XXXXXXX  ,          XXXXXXX  ,XXXXXXX  ,KC_RBRC  ,XXXXXXX  ,_______  ,_______  ,XXXXXXX  ,XXXXXXX  ,
+     _______  ,   UNDO  ,   CUT   ,   COPY  ,   PASTE ,KC_LBRC  ,XXXXXXX  ,XXXXXXX  ,          XXXXXXX  ,XXXXXXX  ,KC_RBRC  ,XXXXXXX  ,_______  ,_______  ,XXXXXXX  ,XXXXXXX  ,
   //├--------┼--------┼--------┼--------┼----┬--┴----┬--┼--------┼--------┤        ├--------┼--------┼---┬----┴--┬---┼--------┼--------┼--------┼--------┤
-     _______  ,XXXXXXX  ,XXXXXXX  ,KC_BSPC  ,      LOWER2   ,    KC_SPC   ,XXXXXXX  ,          XXXXXXX  ,KC_CENT  ,     RAISE2   ,     CTRLE    ,KC_DOWN  ,KC_UP    ,KC_SAVE 
+     _______  ,XXXXXXX  ,XXXXXXX  ,CTRLE    ,      LOWER2   ,    KC_SPC   ,XXXXXXX  ,          XXXXXXX  ,KC_CENT  ,     RAISE2   ,     KC_DEL   ,KC_DOWN  ,KC_UP    ,KC_SAVE 
   //└--------┴--------┴--------┴--------┘    └--------┘  └--------┴--------┘        └--------┴--------┘   └--------┘   └--------┴--------┴--------┴--------┘
   ),
 
@@ -60,9 +64,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├--------┼--------┼--------┼--------┼--------┼--------┼--------┤                            ├--------┼--------┼--------┼--------┼--------┼--------┼--------┤
      _______  ,KC_GRV   ,KC_BSLS  ,KC_EQL   ,KC_SLSH  ,KC_MINUS ,XXXXXXX  ,                              XXXXXXX  ,KC_LEFT  ,KC_DOWN  ,KC_UP    ,KC_RIGHT ,KC_UNDS  ,_______  ,
   //├--------┼--------┼--------┼--------┼--------┼--------┼--------┼--------┐        ┌--------┼--------┼--------┼--------┼--------┼--------┼--------┼--------┤
-     _______  ,KC_UNDO  ,KC_CUT   ,KC_COPY  ,KC_PASTE ,KC_LPRN  ,XXXXXXX  ,XXXXXXX  ,          XXXXXXX  ,XXXXXXX  ,KC_RPRN  ,XXXXXXX  ,XXXXXXX  ,XXXXXXX  ,XXXXXXX  ,_______  ,
+     _______  ,   UNDO  ,   CUT   ,   COPY  ,   PASTE ,KC_LPRN  ,XXXXXXX  ,XXXXXXX  ,          XXXXXXX  ,XXXXXXX  ,KC_RPRN  ,XXXXXXX  ,XXXXXXX  ,XXXXXXX  ,XXXXXXX  ,_______  ,
   //├--------┼--------┼--------┼--------┼----┬--┴----┬--┼--------┼--------┤        ├--------┼--------┼---┬----┴--┬---┼--------┼--------┼--------┼--------┤
-     _______  ,XXXXXXX  ,XXXXXXX  ,KC_DEL   ,      LOWER2   ,    KC_TAB   ,XXXXXXX  ,          XXXXXXX  ,KC_ENT   ,     RAISE2   ,     CTRLE  ,KC_DOWN  ,KC_UP    ,KC_SAVE 
+     _______  ,XXXXXXX  ,XXXXXXX  ,CTRLE    ,      LOWER2   ,    KC_TAB   ,XXXXXXX  ,          XXXXXXX  ,KC_ENT   ,     RAISE2   ,     KC_BSPC  ,KC_DOWN  ,KC_UP    ,KC_SAVE 
   //└--------┴--------┴--------┴--------┘    └--------┘  └--------┴--------┘        └--------┴--------┘   └--------┘   └--------┴--------┴--------┴--------┘
   ),
 };
