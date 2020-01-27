@@ -21,7 +21,7 @@ enum custom_keycodes {
 
 
 // Layer Mode aliases
-#define CTRLE CTL_T(KC_TAB)
+#define CTRLE CTL_T(KC_ESC)
 #define KC_CENT LGUI(KC_ENT)
 
 
@@ -35,7 +35,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|---------+--------+--------+--------+--------|                 |--------+--------+--------+--------+--------|
        KC_SCLN,    KC_Q,    KC_J,    KC_K,    KC_X,                      KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,\
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
-       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_SPC, KC_LGUI, KC_PSCR,  KC_ENT,   RAISE, KC_BSPC, KC_DOWN,   KC_UP \
+       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_SPC, KC_LGUI, KC_PSCR,  KC_ENT,   RAISE, KC_BSPC, KC_DOWN,TG(_ADJUST) \
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
   ),
 
@@ -47,7 +47,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|---------+--------+--------+--------+--------|                 |--------+--------+--------+--------+--------|
        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LPRN,                   KC_RPRN, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
-       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_SPC, KC_LGUI, KC_PSCR, KC_CENT,   RAISE,  KC_DEL, KC_DOWN,   KC_UP \
+       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_SPC, KC_LGUI, KC_PSCR, KC_CENT,   RAISE,  KC_DEL, KC_DOWN, _______ \
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
   ),
 
@@ -59,19 +59,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|---------+--------+--------+--------+--------|                 |--------+--------+--------+--------+--------|
        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LBRC,                   KC_RBRC, XXXXXXX, _______, _______, XXXXXXX,\
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
-       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_SPC, KC_LGUI, KC_PSCR,  KC_ENT,   RAISE, KC_BSPC, KC_DOWN,   KC_UP \
+       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_TAB, KC_LGUI, KC_PSCR,  KC_ENT,   RAISE, KC_BSPC, KC_DOWN, _______ \
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
   ),
 
   [_ADJUST] = LAYOUT(
   //,---------------------------------------------.                 ,--------------------------------------------.
-       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
+       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, KC_MS_U, XXXXXXX, XXXXXXX,\
   //|---------+--------+--------+--------+--------|                 |--------+--------+--------+--------+--------|
-       XXXXXXX, XXXXXXX, XXXXXXX, KC_BTN1, KC_BTN2,                   KC_MS_L, KC_MS_D, KC_MS_U, KC_MS_R, XXXXXXX,\
+       XXXXXXX, XXXXXXX, XXXXXXX, KC_BTN1, KC_BTN2,                   XXXXXXX, KC_MS_L, KC_MS_D, KC_MS_R, XXXXXXX,\
   //|---------+--------+--------+--------+--------|                 |--------+--------+--------+--------+--------|
        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
-       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_SPC, KC_LGUI, KC_PSCR,  KC_ENT,   RAISE,  KC_DEL, KC_DOWN,   KC_UP \
+       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_SPC, KC_LGUI, KC_PSCR, KC_BTN2, KC_BTN1,  KC_DEL, KC_DOWN, _______ \
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
   )
 };
@@ -95,8 +95,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         layer_off(_LOWER);
         update_tri_layer(_LOWER, _RAISE, _ADJUST);
         if (lower_pressed) { 
-          register_code(KC_ESC);
-          unregister_code(KC_ESC);
+          register_code(KC_LCTL);
+          register_code(KC_SPC);
+          unregister_code(KC_SPC);
+          unregister_code(KC_LCTL);
         }
         lower_pressed = false;
       }
@@ -110,10 +112,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         layer_off(_RAISE);
         update_tri_layer(_LOWER, _RAISE, _ADJUST);
         if (raise_pressed) { 
-          register_code(KC_LCTL);
-          register_code(KC_SPC);
-          unregister_code(KC_SPC);
-          unregister_code(KC_LCTL);
+          register_code(KC_LANG2);
+          unregister_code(KC_LANG2);
         }
         raise_pressed = false;
       }
