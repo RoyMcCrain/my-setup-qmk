@@ -21,19 +21,11 @@ enum custom_keycodes {
   DVORAK = SAFE_RANGE,
   LOWER,
   RAISE,
-  ADJUST,
-  BACKLIT,
-  RGBRST
-};
-
-enum macro_keycodes {
-  KC_SAMPLEMACRO,
+  ADJUST
 };
 
 // Shortcut to make keymap more readable
-#define LOWER1 LT(_LOWER, KC_LANG1)
-#define RAISE2 LT(_RAISE, KC_LANG2)
-#define CTRLE CTL_T(KC_ESC)
+#define CTRLE CTL_T(KC_TAB)
 
 // save cmd + s
 #define KC_SAVE LGUI(KC_S)
@@ -53,7 +45,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LSFT, KC_SCLN,    KC_Q,    KC_J,    KC_K,    KC_X,                         KC_B,    KC_M,    KC_W,    KC_V,    KC_Z, KC_RSFT,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            CTRLE,  LOWER1,  KC_SPC,     KC_ENT,  RAISE2, KC_BSPC \
+                                            CTRLE,   LOWER,  KC_SPC,     KC_ENT,  RAISE, KC_BSPC \
                                       //`--------------------------'  `--------------------------'
 
   ),
@@ -66,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX,    UNDO,     CUT,    COPY,    PSTE, KC_LPRN,                      KC_RPRN, XXXXXXX, _______, _______, XXXXXXX, XXXXXXX,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            CTRLE,  LOWER1,  KC_SPC,    KC_CENT,  RAISE2, KC_DEL \
+                                            CTRLE,  LOWER,  KC_SPC,    KC_CENT,  RAISE, KC_DEL \
                                       //`--------------------------'  `--------------------------'
     ),
 
@@ -78,19 +70,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX,    UNDO,     CUT,    COPY,    PSTE, KC_LBRC,                      KC_RBRC, XXXXXXX, _______, _______, XXXXXXX, XXXXXXX,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            CTRLE,  LOWER1,  KC_TAB,     KC_ENT,  RAISE2, KC_BSPC \
+                                            CTRLE,  LOWER,  KC_TAB,     KC_ENT,  RAISE, KC_BSPC \
                                       //`--------------------------'  `--------------------------'
   ),
 
   [_ADJUST] = LAYOUT( \
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-        RESET,  RGBRST, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
+        RESET,   KC_W, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
+      RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI, KC_BTN1, XXXXXXX,                      KC_MS_L, KC_MS_D, KC_MS_U, KC_MS_R, XXXXXXX, XXXXXXX,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LGUI,  LOWER1,  KC_SPC,     KC_ENT,  RAISE2, KC_RALT \
+                                          KC_LGUI,  LOWER,  KC_SPC,     KC_ENT,  RAISE, KC_RALT \
                                       //`--------------------------'  `--------------------------'
   )
 };
@@ -131,11 +123,6 @@ void set_keylog(uint16_t keycode, keyrecord_t *record);
 const char *read_keylog(void);
 const char *read_keylogs(void);
 
-// const char *read_mode_icon(bool swap);
-// const char *read_host_led_state(void);
-// void set_timelog(void);
-// const char *read_timelog(void);
-
 void matrix_scan_user(void) {
    iota_gfx_task();
 }
@@ -145,10 +132,6 @@ void matrix_render_user(struct CharacterMatrix *matrix) {
     // If you want to change the display of OLED, you need to change here
     matrix_write_ln(matrix, read_layer_state());
     matrix_write_ln(matrix, read_keylog());
-    //matrix_write_ln(matrix, read_keylogs());
-    //matrix_write_ln(matrix, read_mode_icon(keymap_config.swap_lalt_lgui));
-    //matrix_write_ln(matrix, read_host_led_state());
-    //matrix_write_ln(matrix, read_timelog());
   } else {
     matrix_write(matrix, read_logo());
   }
@@ -169,6 +152,8 @@ void iota_gfx_task_user(void) {
 }
 #endif//SSD1306OLED
 
+static bool lower_pressed = false;
+static bool raise_pressed = false;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
 #ifdef SSD1306OLED
@@ -180,25 +165,39 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case DVORAK:
       if (record->event.pressed) {
-        persistent_default_layer_set(1UL<<_DVORAK);
+        persistent_default_layer_set(_DVORAK);
       }
       return false;
     case LOWER:
       if (record->event.pressed) {
+        lower_pressed = true;
         layer_on(_LOWER);
         update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
       } else {
         layer_off(_LOWER);
         update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+        if (lower_pressed) { 
+          register_code(KC_ESC);
+          unregister_code(KC_ESC);
+        }
+        lower_pressed = false;
       }
       return false;
     case RAISE:
       if (record->event.pressed) {
+        raise_pressed = true;
         layer_on(_RAISE);
         update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
       } else {
         layer_off(_RAISE);
         update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+        if (raise_pressed) { 
+          register_code(KC_LCTL);
+          register_code(KC_SPC);
+          unregister_code(KC_SPC);
+          unregister_code(KC_LCTL);
+        }
+        raise_pressed = false;
       }
       return false;
     case ADJUST:
@@ -208,24 +207,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           layer_off(_ADJUST);
         }
         return false;
-    case RGB_MOD:
-      #ifdef RGBLIGHT_ENABLE
+    default: // (3)
         if (record->event.pressed) {
-          rgblight_mode(RGB_current_mode);
-          rgblight_step();
-          RGB_current_mode = rgblight_config.mode;
+            // reset the flag
+            lower_pressed = false;
+            raise_pressed = false;
         }
-      #endif
-      return false;
-    case RGBRST:
-      #ifdef RGBLIGHT_ENABLE
-        if (record->event.pressed) {
-          eeconfig_update_rgblight_default();
-          rgblight_enable();
-          RGB_current_mode = rgblight_config.mode;
-        }
-      #endif
-      break;
+        break;
   }
   return true;
 }
