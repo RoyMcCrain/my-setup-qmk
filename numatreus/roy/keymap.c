@@ -16,14 +16,13 @@ enum custom_keycodes {
   BASE = SAFE_RANGE,
   LOWER,
   RAISE,
-  ADJUST
+  ADJUST,
+  CTRLE
 };
 
 
 // Layer Mode aliases
-#define CTRLE CTL_T(KC_ESC)
 #define KC_CENT LGUI(KC_ENT)
-
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -35,7 +34,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|---------+--------+--------+--------+--------|                 |--------+--------+--------+--------+--------|
        KC_SCLN,    KC_Q,    KC_J,    KC_K,    KC_X,                      KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,\
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
-       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_SPC, KC_LGUI, KC_PSCR,  KC_ENT,   RAISE, KC_BSPC, KC_DOWN,TG(_ADJUST) \
+       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_SPC,  ADJUST, KC_LGUI,  KC_ENT,   RAISE, KC_BSPC, KC_DOWN, KC_UP \
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
   ),
 
@@ -47,7 +46,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|---------+--------+--------+--------+--------|                 |--------+--------+--------+--------+--------|
        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LPRN,                   KC_RPRN, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
-       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_SPC, KC_LGUI, KC_PSCR, KC_CENT,   RAISE,  KC_DEL, KC_DOWN, _______ \
+       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_SPC, _______, _______, KC_CENT,   RAISE,  KC_DEL, _______, _______ \
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
   ),
 
@@ -59,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|---------+--------+--------+--------+--------|                 |--------+--------+--------+--------+--------|
        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LBRC,                   KC_RBRC, XXXXXXX, _______, _______, XXXXXXX,\
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
-       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_TAB, KC_LGUI, KC_PSCR,  KC_ENT,   RAISE, KC_BSPC, KC_DOWN, _______ \
+       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_TAB, _______, _______,  KC_ENT,   RAISE, KC_BSPC, _______, _______ \
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
   ),
 
@@ -71,13 +70,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|---------+--------+--------+--------+--------|                 |--------+--------+--------+--------+--------|
        XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
-       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_SPC, KC_LGUI, KC_PSCR, KC_BTN2, KC_BTN1,  KC_DEL, KC_DOWN, _______ \
+       KC_LSFT, KC_LALT,   CTRLE,   LOWER,  KC_SPC, _______, _______, KC_BTN2, KC_BTN1, XXXXXXX, _______, _______ \
   //|---------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------+--------|
   )
 };
 
 static bool lower_pressed = false;
+static uint16_t lower_pressed_time = 0;
 static bool raise_pressed = false;
+static uint16_t raise_pressed_time = 0;
+static bool ctrl_pressed = false;
+static uint16_t ctrl_pressed_time = 0;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case BASE:
@@ -88,45 +91,66 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break;
     case LOWER:
       if (record->event.pressed) {
-        lower_pressed = true;
-        layer_on(_LOWER);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+          lower_pressed = true;
+          lower_pressed_time = record->event.time;
+          layer_on(_LOWER);
+          update_tri_layer(_LOWER, _RAISE, _ADJUST);
       } else {
-        layer_off(_LOWER);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-        if (lower_pressed) { 
-          register_code(KC_LCTL);
-          register_code(KC_SPC);
-          unregister_code(KC_SPC);
-          unregister_code(KC_LCTL);
-        }
-        lower_pressed = false;
+          layer_off(_LOWER);
+          update_tri_layer(_LOWER, _RAISE, _ADJUST);
+          if (lower_pressed && (TIMER_DIFF_16(record->event.time, lower_pressed_time) < TAPPING_TERM)) { 
+            register_code(KC_LANG1);
+            unregister_code(KC_LANG1);
+          }
+          lower_pressed = false;
       }
       return false;
+      break;
     case RAISE:
       if (record->event.pressed) {
-        raise_pressed = true;
-        layer_on(_RAISE);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+          raise_pressed = true;
+          raise_pressed_time = record->event.time;
+          layer_on(_RAISE);
+          update_tri_layer(_LOWER, _RAISE, _ADJUST);
       } else {
-        layer_off(_RAISE);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-        if (raise_pressed) { 
-          register_code(KC_LANG2);
-          unregister_code(KC_LANG2);
-        }
-        raise_pressed = false;
+          layer_off(_RAISE);
+          update_tri_layer(_LOWER, _RAISE, _ADJUST);
+          if (raise_pressed && (TIMER_DIFF_16(record->event.time, raise_pressed_time) < TAPPING_TERM)) { 
+              register_code(KC_LANG2);
+              unregister_code(KC_LANG2);
+          }
+          raise_pressed = false;
       }
       return false;
+      break;
     case ADJUST:
         if (record->event.pressed) {
-          layer_on(_ADJUST);
+            layer_on(_ADJUST);
         } else {
-          layer_off(_ADJUST);
+            layer_off(_ADJUST);
         }
         return false;
-    default: // (3)
+    case CTRLE:
         if (record->event.pressed) {
+            ctrl_pressed = true;
+            ctrl_pressed_time = record->event.time;
+        } else {
+            unregister_code(KC_LCTL);
+            if (ctrl_pressed && (TIMER_DIFF_16(record->event.time, ctrl_pressed_time) < TAPPING_TERM)) { 
+                tap_code(KC_ESC);
+                tap_code(KC_LANG2);
+            }
+            ctrl_pressed = false;
+        }
+        return false;
+        break;
+    default:
+        if (record->event.pressed) {
+            if (ctrl_pressed) {
+              register_code(KC_LCTL);
+            } else {
+              ctrl_pressed = false;
+            }
             // reset the flag
             lower_pressed = false;
             raise_pressed = false;

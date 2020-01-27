@@ -21,11 +21,9 @@ enum custom_keycodes {
   DVORAK = SAFE_RANGE,
   LOWER,
   RAISE,
-  ADJUST
+  ADJUST,
+  CTRLE
 };
-
-// Shortcut to make keymap more readable
-#define CTRLE CTL_T(KC_ESC)
 
 // save cmd + s
 #define KC_SAVE LGUI(KC_S)
@@ -153,7 +151,11 @@ void iota_gfx_task_user(void) {
 #endif//SSD1306OLED
 
 static bool lower_pressed = false;
+static uint16_t lower_pressed_time = 0;
 static bool raise_pressed = false;
+static uint16_t raise_pressed_time = 0;
+static bool ctrl_pressed = false;
+static uint16_t ctrl_pressed_time = 0;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
 #ifdef SSD1306OLED
@@ -171,35 +173,37 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case LOWER:
       if (record->event.pressed) {
         lower_pressed = true;
+        lower_pressed_time = record->event.time;
         layer_on(_LOWER);
         update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
       } else {
         layer_off(_LOWER);
         update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
-        if (lower_pressed) { 
-          register_code(KC_LCTL);
-          register_code(KC_SPC);
-          unregister_code(KC_SPC);
-          unregister_code(KC_LCTL);
+        if (lower_pressed && (TIMER_DIFF_16(record->event.time, lower_pressed_time) < TAPPING_TERM)) { 
+          register_code(KC_LANG1);
+          unregister_code(KC_LANG1);
         }
         lower_pressed = false;
       }
       return false;
+      break;
     case RAISE:
       if (record->event.pressed) {
         raise_pressed = true;
+        raise_pressed_time = record->event.time;
         layer_on(_RAISE);
         update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
       } else {
         layer_off(_RAISE);
         update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
-        if (raise_pressed) { 
+        if (raise_pressed && (TIMER_DIFF_16(record->event.time, raise_pressed_time) < TAPPING_TERM)) { 
           register_code(KC_LANG2);
           unregister_code(KC_LANG2);
         }
         raise_pressed = false;
       }
       return false;
+      break;
     case ADJUST:
         if (record->event.pressed) {
           layer_on(_ADJUST);
@@ -207,8 +211,27 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           layer_off(_ADJUST);
         }
         return false;
+    case CTRLE:
+        if (record->event.pressed) {
+            ctrl_pressed = true;
+            ctrl_pressed_time = record->event.time;
+        } else {
+          unregister_code(KC_LCTL);
+          if (ctrl_pressed && (TIMER_DIFF_16(record->event.time, ctrl_pressed_time) < TAPPING_TERM)) { 
+              tap_code(KC_ESC);
+              tap_code(KC_LANG2);
+          }
+          ctrl_pressed = false;
+        }
+        return false;
+        break;
     default:
         if (record->event.pressed) {
+            if (ctrl_pressed) {
+              register_code(KC_LCTL);
+            } else {
+              ctrl_pressed = false;
+            }
             // reset the flag
             lower_pressed = false;
             raise_pressed = false;
