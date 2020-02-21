@@ -22,6 +22,7 @@ enum custom_keycodes {
   LOWER,
   RAISE,
   ADJUST,
+  ENTC,
   CTRLE
 };
 
@@ -37,13 +38,13 @@ enum custom_keycodes {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_DVORAK] = LAYOUT( \
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-  TG(_ADJUST), KC_QUOT, KC_COMM,  KC_DOT,    KC_P,    KC_Y,                         KC_F,    KC_G,    KC_C,    KC_R,    KC_L, KC_RALT,\
+      KC_LALT, KC_QUOT, KC_COMM,  KC_DOT,    KC_P,    KC_Y,                         KC_F,    KC_G,    KC_C,    KC_R,    KC_L, TG(_ADJUST),\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LGUI,    KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                         KC_D,    KC_H,    KC_T,    KC_N,    KC_S, KC_SAVE,\
+      KC_LGUI,    KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                         KC_D,    KC_H,    KC_T,    KC_N,    KC_S, KC_ENT,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT, KC_SCLN,    KC_Q,    KC_J,    KC_K,    KC_X,                         KC_B,    KC_M,    KC_W,    KC_V,    KC_Z, TG(_ADJUST),\
+      KC_LSFT, KC_SCLN,    KC_Q,    KC_J,    KC_K,    KC_X,                         KC_B,    KC_M,    KC_W,    KC_V,    KC_Z, KC_SAVE,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            CTRLE,   LOWER,  KC_SPC,     KC_ENT,  RAISE, KC_BSPC \
+                                            CTRLE,   LOWER,  KC_SPC,       ENTC,   RAISE, KC_BSPC \
                                       //`--------------------------'  `--------------------------'
 
   ),
@@ -54,9 +55,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       _______,    KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                         KC_6,    KC_7,    KC_8,    KC_9,    KC_0, _______,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      _______,    UNDO,     CUT,    COPY,    PSTE, KC_LPRN,                      KC_RPRN, XXXXXXX, _______, _______, XXXXXXX, XXXXXXX,\
+      _______,    UNDO,     CUT,    COPY,    PSTE, KC_LPRN,                      KC_RPRN,KC_MINUS,  KC_DOT, KC_ASTR, KC_PLUS, XXXXXXX,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            CTRLE,  LOWER,  KC_SPC,    KC_CENT,  RAISE, KC_DEL \
+                                            CTRLE,   LOWER,  KC_SPC,    KC_CENT,   RAISE, KC_DEL \
                                       //`--------------------------'  `--------------------------'
     ),
 
@@ -68,7 +69,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       _______,    UNDO,     CUT,    COPY,    PSTE, KC_LBRC,                      KC_RBRC, XXXXXXX, _______, _______, XXXXXXX, _______,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            CTRLE,  LOWER,  KC_TAB,     KC_ENT,  RAISE, KC_BSPC \
+                                            CTRLE,   LOWER,  KC_TAB,       ENTC,  RAISE, KC_BSPC \
                                       //`--------------------------'  `--------------------------'
   ),
 
@@ -76,7 +77,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, KC_MS_U, XXXXXXX, XXXXXXX, XXXXXXX,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, KC_MS_L, KC_MS_D, KC_MS_R, XXXXXXX, XXXXXXX,\
+      _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, KC_MS_L, KC_MS_D, KC_MS_R, XXXXXXX,   RESET,\
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -211,6 +212,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           layer_off(_ADJUST);
         }
         return false;
+    case ENTC:
+        if (record->event.pressed) {
+            ctrl_pressed = true;
+            ctrl_pressed_time = record->event.time;
+        } else {
+          unregister_code(KC_LCTL);
+          if (ctrl_pressed && (TIMER_DIFF_16(record->event.time, ctrl_pressed_time) < TAPPING_TERM)) { 
+              tap_code(KC_ENT);
+          }
+          ctrl_pressed = false;
+        }
+        return false;
+        break;
     case CTRLE:
         if (record->event.pressed) {
             ctrl_pressed = true;
