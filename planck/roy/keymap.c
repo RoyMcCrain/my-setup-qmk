@@ -56,10 +56,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_DVORAK] = LAYOUT_planck_grid(
-    KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,   KC_TAB,  KC_BSPC,     KC_F,    KC_G,    KC_C,    KC_R,    KC_L,
-    KC_A,    KC_O,    KC_E,    KC_U,    KC_I,   KC_ESC,  TG(_ADJUST), KC_D,    KC_H,    KC_T,    KC_N,    KC_S,
-    KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,   KC_LEFT, KC_RIGHT,    KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,
-    KC_LGUI, KC_LALT, CTRLE,   LOWER,   KC_SPC, KC_UP,   KC_DOWN,     ENTC,    RAISE,   KC_BSPC, KC_DOWN, KC_SAVE
+    KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,   KC_TAB,  KC_BSPC,  KC_F,    KC_G,    KC_C,    KC_R,    KC_L,
+    KC_A,    KC_O,    KC_E,    KC_U,    KC_I,   KC_ESC,  KC_ESC,   KC_D,    KC_H,    KC_T,    KC_N,    KC_S,
+    KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,   KC_LEFT, KC_RIGHT, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,
+    KC_LGUI, KC_LALT, CTRLE,   LOWER,   KC_SPC, KC_UP,   KC_DOWN,  ENTC,    RAISE,   KC_BSPC, KC_DOWN, KC_SAVE
 ),
 
 /* Lower
