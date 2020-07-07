@@ -56,14 +56,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |   ;  |   Q  |   J  |   K  |   X  |      |      |   B  |   M  |   W  |   V  |   Z  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | GUI  | Alt  | Ctrl |Lower |Space |      |      | ENT  | Raise| BCSP |  Up  | Save |
+ * | GUI  | Alt  | Ctrl |Lower |Space |      |      | ENT  | Raise| BCSP |  SFT | Save |
  * `-----------------------------------------------------------------------------------'
  */
 [_DVORAK] = LAYOUT_planck_grid(
     KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,   KC_TAB,  KC_BSPC,  KC_F,    KC_G,    KC_C,    KC_R,    KC_L,
     KC_A,    KC_O,    KC_E,    KC_U,    KC_I,   KC_ESC,  KC_ESC,   KC_D,    KC_H,    KC_T,    KC_N,    KC_S,
     KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,   KC_LEFT, KC_RIGHT, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,
-    KC_LGUI, KC_LALT, CTRLE,   LOWER,   KC_SPC, KC_SPC,  ENTC,     ENTC,    RAISE,   KC_BSPC, KC_DOWN, KC_SAVE
+    KC_LGUI, KC_LALT, CTRLE,   LOWER,   KC_SPC, KC_SPC,  ENTC,     ENTC,    RAISE,   KC_BSPC, KC_RSFT, KC_SAVE
 ),
 
 /* Lower
@@ -150,8 +150,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         layer_off(_LOWER);
         update_tri_layer(_LOWER, _RAISE, _ADJUST);
         if (lower_pressed && (TIMER_DIFF_16(record->event.time, lower_pressed_time) < TAPPING_TERM)) { 
-          register_code(KC_LANG1);
-          unregister_code(KC_LANG1);
+          register_code(KC_LANG2);
+          unregister_code(KC_LANG2);
         }
         lower_pressed = false;
       }
@@ -167,8 +167,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         layer_off(_RAISE);
         update_tri_layer(_LOWER, _RAISE, _ADJUST);
         if (raise_pressed && (TIMER_DIFF_16(record->event.time, raise_pressed_time) < TAPPING_TERM)) { 
-          register_code(KC_LANG2);
-          unregister_code(KC_LANG2);
+          register_code(KC_LANG1);
+          unregister_code(KC_LANG1);
         }
         raise_pressed = false;
       }
