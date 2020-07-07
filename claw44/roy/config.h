@@ -32,26 +32,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define USE_SERIAL_PD2
 
-#define TAPPING_FORCE_HOLD
 #define TAPPING_TERM 200
 
 // AUTO_SHIFT
 #define AUTO_SHIFT_TIMEOUT 200
 #define NO_AUTO_SHIFT_NUMERIC
-
-// MOUSEKEY
-#define MOUSEKEY_DELAY 100
-#define MOUSEKEY_INTERVAL 32
-// ホイールの加速無効
-#define MOUSEKEY_WHEEL_TIME_TO_MAX 0
-#define MOUSEKEY_WHEEL_MAX_SPEED 20
-
-#ifdef RGBLIGHT_ENABLE
-    #undef RGBLED_NUM
-    #define RGBLIGHT_ANIMATIONS
-    #define RGBLED_NUM 27
-    #define RGBLIGHT_LIMIT_VAL 120
-    #define RGBLIGHT_HUE_STEP 10
-    #define RGBLIGHT_SAT_STEP 17
-    #define RGBLIGHT_VAL_STEP 17
-#endif
