@@ -21,9 +21,7 @@ enum custom_keycodes {
   DVORAK = SAFE_RANGE,
   LOWER,
   RAISE,
-  ADJUST,
-  ENTC,
-  CTRLE
+  ADJUST
 };
 
 // save cmd + s
@@ -48,7 +46,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_LSFT, KC_SCLN,    KC_Q,    KC_J,    KC_K,    KC_X,                         KC_B,    KC_M,    KC_W,    KC_V,    KC_Z, KC_SAVE,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            CTRLE,   LOWER,  KC_SPC,       ENTC,   RAISE, KC_BSPC \
+                                          KC_LCTL,   LOWER,  KC_SPC,     KC_ENT,   RAISE, KC_BSPC \
                                       //`--------------------------'  `--------------------------'
 
   ),
@@ -61,7 +59,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       _______,    UNDO,     CUT,    COPY,    PSTE, KC_LPRN,                      KC_RPRN,   KC_CH,   KC_CQ, KC_ASTR, KC_PLUS, XXXXXXX,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            CTRLE,   LOWER,  KC_SPC,    KC_CENT,   RAISE, KC_DEL \
+                                         KC_LCTL,    LOWER,  KC_SPC,    KC_CENT,   RAISE, KC_DEL \
                                       //`--------------------------'  `--------------------------'
     ),
 
@@ -73,7 +71,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       _______,    UNDO,     CUT,    COPY,    PSTE, KC_LBRC,                      KC_RBRC, KC_RGUI, KC_RGUI, _______, XXXXXXX, _______,\
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                            CTRLE,   LOWER,  KC_TAB,       ENTC,  RAISE, KC_BSPC \
+                                          KC_LGUI,   LOWER,  KC_TAB,     KC_ENT,  RAISE, KC_BSPC \
                                       //`--------------------------'  `--------------------------'
   ),
 
@@ -159,8 +157,6 @@ static bool lower_pressed = false;
 static uint16_t lower_pressed_time = 0;
 static bool raise_pressed = false;
 static uint16_t raise_pressed_time = 0;
-static bool ctrl_pressed = false;
-static uint16_t ctrl_pressed_time = 0;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   if (record->event.pressed) {
 #ifdef SSD1306OLED
@@ -185,8 +181,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         layer_off(_LOWER);
         update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
         if (lower_pressed && (TIMER_DIFF_16(record->event.time, lower_pressed_time) < TAPPING_TERM)) { 
-          register_code(KC_LANG1);
-          unregister_code(KC_LANG1);
+          register_code(KC_LCTL);
+          register_code(KC_SPC);
+          unregister_code(KC_SPC);
+          unregister_code(KC_LCTL);
         }
         lower_pressed = false;
       }
@@ -202,8 +200,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         layer_off(_RAISE);
         update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
         if (raise_pressed && (TIMER_DIFF_16(record->event.time, raise_pressed_time) < TAPPING_TERM)) { 
-          register_code(KC_LANG2);
-          unregister_code(KC_LANG2);
+          register_code(KC_ESC);
+          unregister_code(KC_ESC);
         }
         raise_pressed = false;
       }
@@ -216,40 +214,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           layer_off(_ADJUST);
         }
         return false;
-    case ENTC:
-        if (record->event.pressed) {
-            ctrl_pressed = true;
-            ctrl_pressed_time = record->event.time;
-        } else {
-          unregister_code(KC_LCTL);
-          if (ctrl_pressed && (TIMER_DIFF_16(record->event.time, ctrl_pressed_time) < TAPPING_TERM)) { 
-              tap_code(KC_ENT);
-          }
-          ctrl_pressed = false;
-        }
-        return false;
-        break;
-    case CTRLE:
-        if (record->event.pressed) {
-            ctrl_pressed = true;
-            ctrl_pressed_time = record->event.time;
-        } else {
-          unregister_code(KC_LCTL);
-          if (ctrl_pressed && (TIMER_DIFF_16(record->event.time, ctrl_pressed_time) < TAPPING_TERM)) { 
-              tap_code(KC_ESC);
-              tap_code(KC_LANG2);
-          }
-          ctrl_pressed = false;
-        }
-        return false;
-        break;
     default:
         if (record->event.pressed) {
-            if (ctrl_pressed) {
-              register_code(KC_LCTL);
-            } else {
-              ctrl_pressed = false;
-            }
             // reset the flag
             lower_pressed = false;
             raise_pressed = false;
