@@ -28,9 +28,7 @@ enum planck_keycodes {
   DVORAK = SAFE_RANGE,
   LOWER,
   RAISE,
-  ADJUST,
-  ENTC,
-  CTRLE
+  ADJUST
 };
 
 // save cmd + s
@@ -63,7 +61,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,   KC_TAB,  KC_BSPC,  KC_F,    KC_G,    KC_C,    KC_R,    KC_L,
     KC_A,    KC_O,    KC_E,    KC_U,    KC_I,   KC_ESC,  KC_ESC,   KC_D,    KC_H,    KC_T,    KC_N,    KC_S,
     KC_SCLN, KC_Q,    KC_J,    KC_K,    KC_X,   KC_LEFT, KC_RIGHT, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,
-    KC_LGUI, KC_LALT, CTRLE,   LOWER,   KC_SPC, KC_SPC,  ENTC,     ENTC,    RAISE,   KC_BSPC, KC_RSFT, KC_SAVE
+    KC_LGUI, KC_LALT, KC_LCTL, LOWER,   KC_SPC, KC_SPC,  KC_ENT,   KC_ENT,  RAISE,   KC_BSPC, KC_RSFT, KC_SAVE
 ),
 
 /* Lower
@@ -130,8 +128,6 @@ static bool lower_pressed = false;
 static uint16_t lower_pressed_time = 0;
 static bool raise_pressed = false;
 static uint16_t raise_pressed_time = 0;
-static bool ctrl_pressed = false;
-static uint16_t ctrl_pressed_time = 0;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case DVORAK:
@@ -150,8 +146,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         layer_off(_LOWER);
         update_tri_layer(_LOWER, _RAISE, _ADJUST);
         if (lower_pressed && (TIMER_DIFF_16(record->event.time, lower_pressed_time) < TAPPING_TERM)) { 
-          register_code(KC_LANG2);
-          unregister_code(KC_LANG2);
+          register_code(KC_LCTL);
+          register_code(KC_SPC);
+          unregister_code(KC_SPC);
+          unregister_code(KC_LCTL);
         }
         lower_pressed = false;
       }
@@ -167,8 +165,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         layer_off(_RAISE);
         update_tri_layer(_LOWER, _RAISE, _ADJUST);
         if (raise_pressed && (TIMER_DIFF_16(record->event.time, raise_pressed_time) < TAPPING_TERM)) { 
-          register_code(KC_LANG1);
-          unregister_code(KC_LANG1);
+          register_code(KC_ESC);
+          unregister_code(KC_ESC);
         }
         raise_pressed = false;
       }
@@ -182,40 +180,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         return false;
         break;
-    case ENTC:
-        if (record->event.pressed) {
-            ctrl_pressed = true;
-            ctrl_pressed_time = record->event.time;
-        } else {
-          unregister_code(KC_LCTL);
-          if (ctrl_pressed && (TIMER_DIFF_16(record->event.time, ctrl_pressed_time) < TAPPING_TERM)) { 
-              tap_code(KC_ENT);
-          }
-          ctrl_pressed = false;
-        }
-        return false;
-        break;
-    case CTRLE:
-        if (record->event.pressed) {
-            ctrl_pressed = true;
-            ctrl_pressed_time = record->event.time;
-        } else {
-          unregister_code(KC_LCTL);
-          if (ctrl_pressed && (TIMER_DIFF_16(record->event.time, ctrl_pressed_time) < TAPPING_TERM)) { 
-              tap_code(KC_ESC);
-              tap_code(KC_LANG2);
-          }
-          ctrl_pressed = false;
-        }
-        return false;
-        break;
     default:
         if (record->event.pressed) {
-            if (ctrl_pressed) {
-              register_code(KC_LCTL);
-            } else {
-              ctrl_pressed = false;
-            }
             // reset the flag
             lower_pressed = false;
             raise_pressed = false;
